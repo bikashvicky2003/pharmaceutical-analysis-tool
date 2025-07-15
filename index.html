@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmaceutical Tablet Analysis Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #3498db;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .variable-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .variable-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .variable-card h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .variable-list {
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
+            min-height: 100px;
+            border: 1px solid #dee2e6;
+        }
+
+        .variable-item {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 5px;
+            padding: 8px 12px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .variable-item button {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .data-input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .data-column {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .data-column h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .data-values {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .data-values input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .results {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .significance {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .significant {
+            background-color: #27ae60;
+        }
+
+        .not-significant {
+            background-color: #e74c3c;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .correlation-matrix {
+            overflow-x: auto;
+        }
+
+        .high-correlation {
+            background-color: #ffebee !important;
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .equation {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .regression-equation {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .csv-import {
+            background: #f0f8ff;
+            border: 1px solid #4a90e2;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .significant-cpps {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .significant-cpps h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .cpp-significance {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .cpp-high-sig {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .cpp-medium-sig {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .cpp-low-sig {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .collinearity-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧬 Pharmaceutical Tablet CQA-CPP Regression Analysis</h1>
+        
+        <div class="section">
+            <h2>🏷️ Project Configuration</h2>
+            <div class="input-group">
+                <label for="tablet-type">Tablet/Product Name:</label>
+                <input type="text" id="tablet-type" placeholder="e.g., Ibuprofen 400mg, Paracetamol 500mg, etc." value="Ibuprofen 400mg">
+            </div>
+            <div class="input-group">
+                <label for="num-observations">Number of Observations:</label>
+                <input type="number" id="num-observations" value="10" min="5" max="100">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Variable Definition</h2>
+            <div class="variable-grid">
+                <div class="variable-card">
+                    <h4>📊 CQA Variables (Y - Response Variables)</h4>
+                    <div class="input-group">
+                        <input type="text" id="new-cqa" placeholder="Enter CQA variable name (e.g., Dissolution Time)" onkeypress="handleEnterKey(event, 'addCQA')">
+                        <button class="btn btn-small" onclick="addCQA()">Add CQA</button>
+                    </div>
+                    <div class="variable-list" id="cqa-list"></div>
+                </div>
+                
+                <div class="variable-card">
+                    <h4>⚙️ CPP Variables (X - Predictor Variables)</h4>
+                    <div class="input-group">
+                        <input type="text" id="new-cpp" placeholder="Enter CPP variable name (e.g., Blender Speed)" onkeypress="handleEnterKey(event, 'addCPP')">
+                        <button class="btn btn-small" onclick="addCPP()">Add CPP</button>
+                    </div>
+                    <div class="variable-list" id="cpp-list"></div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <button class="btn btn-success" onclick="generateDataInputs()">📋 Generate Data Entry Form</button>
+                <button class="btn" onclick="loadSampleVariables()">📁 Load Sample Variables</button>
+                <button class="btn" onclick="clearVariables()">🗑️ Clear All Variables</button>
+            </div>
+        </div>
+
+        <div class="section" id="data-input-section" style="display: none;">
+            <h2>📊 Data Entry</h2>
+            
+            <div class="csv-import">
+                <h4>📂 Import Data from CSV</h4>
+                <input type="file" id="csv-file" accept=".csv" onchange="handleCSVUpload(event)">
+                <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                    CSV format: First row should contain variable names (CQA variables first, then CPP variables)
+                </p>
+            </div>
+
+            <div id="data-input-container"></div>
+            
+            <div class="quick-actions">
+                <button class="btn btn-success" onclick="runAnalysis()">🔬 Run Regression Analysis</button>
+                <button class="btn" onclick="loadSampleData()">📁 Load Sample Data</button>
+                <button class="btn" onclick="clearAllData()">🗑️ Clear All Data</button>
+                <button class="btn" onclick="exportDataToCSV()">💾 Export Data to CSV</button>
+            </div>
+        </div>
+
+        <div class="section" id="results" style="display: none;">
+            <h2>📈 Analysis Results</h2>
+            <div id="results-content"></div>
+            <div class="export-options">
+                <button class="btn" onclick="exportResults()">💾 Export Results</button>
+                <button class="btn" onclick="exportEquations()">📝 Export Equations</button>
+                <button class="btn" onclick="printResults()">🖨️ Print Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cqaVariables = [];
+        let cppVariables = [];
+        let currentData = {};
+        let analysisResults = {};
+
+        // Matrix operations
+        function transpose(matrix) {
+            return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
+        }
+
+        function multiply(A, B) {
+            const result = [];
+            for (let i = 0; i < A.length; i++) {
+                result[i] = [];
+                for (let j = 0; j < B[0].length; j++) {
+                    let sum = 0;
+                    for (let k = 0; k < B.length; k++) {
+                        sum += A[i][k] * B[k][j];
+                    }
+                    result[i][j] = sum;
+                }
+            }
+            return result;
+        }
+
+        function inverse(matrix) {
+            const n = matrix.length;
+            const augmented = matrix.map((row, i) => [...row, ...Array(n).fill(0).map((_, j) => i === j ? 1 : 0)]);
+            
+            for (let i = 0; i < n; i++) {
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(augmented[k][i]) > Math.abs(augmented[maxRow][i])) {
+                        maxRow = k;
+                    }
+                }
+                [augmented[i], augmented[maxRow]] = [augmented[maxRow], augmented[i]];
+                
+                if (Math.abs(augmented[i][i]) < 1e-10) {
+                    throw new Error('Matrix is singular or nearly singular');
+                }
+                
+                for (let k = i + 1; k < n; k++) {
+                    const factor = augmented[k][i] / augmented[i][i];
+                    for (let j = i; j < 2 * n; j++) {
+                        augmented[k][j] -= factor * augmented[i][j];
+                    }
+                }
+            }
+            
+            for (let i = n - 1; i >= 0; i--) {
+                for (let k = i - 1; k >= 0; k--) {
+                    const factor = augmented[k][i] / augmented[i][i];
+                    for (let j = i; j < 2 * n; j++) {
+                        augmented[k][j] -= factor * augmented[i][j];
+                    }
+                }
+            }
+            
+            for (let i = 0; i < n; i++) {
+                const divisor = augmented[i][i];
+                for (let j = 0; j < 2 * n; j++) {
+                    augmented[i][j] /= divisor;
+                }
+            }
+            
+            return augmented.map(row => row.slice(n));
+        }
+
+        function calculateCorrelationMatrix(data) {
+            const n = data.length;
+            const numVars = data[0].length;
+            const correlation = Array(numVars).fill().map(() => Array(numVars).fill(0));
+            
+            const means = Array(numVars).fill(0);
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < numVars; j++) {
+                    means[j] += data[i][j];
+                }
+            }
+            for (let j = 0; j < numVars; j++) {
+                means[j] /= n;
+            }
+            
+            for (let i = 0; i < numVars; i++) {
+                for (let j = 0; j < numVars; j++) {
+                    let num = 0, den1 = 0, den2 = 0;
+                    for (let k = 0; k < n; k++) {
+                        const xi = data[k][i] - means[i];
+                        const xj = data[k][j] - means[j];
+                        num += xi * xj;
+                        den1 += xi * xi;
+                        den2 += xj * xj;
+                    }
+                    correlation[i][j] = num / Math.sqrt(den1 * den2);
+                }
+            }
+            
+            return correlation;
+        }
+
+        function calculateVIF(X) {
+            const n = X.length;
+            const k = X[0].length;
+            const vifValues = [];
+            
+            for (let i = 0; i < k; i++) {
+                const y = X.map(row => row[i]);
+                const X_reduced = X.map(row => row.filter((_, idx) => idx !== i));
+                
+                try {
+                    const result = multipleRegression(X_reduced, y);
+                    const vif = 1 / (1 - result.r_squared);
+                    vifValues.push(vif);
+                } catch (error) {
+                    vifValues.push(null);
+                }
+            }
+            
+            return vifValues;
+        }
+
+        function multipleRegression(X, y) {
+            try {
+                const n = X.length;
+                const k = X[0].length;
+                
+                // Add intercept column
+                const X_with_intercept = X.map(row => [1, ...row]);
+                const X_T = transpose(X_with_intercept);
+                const X_T_X = multiply(X_T, X_with_intercept);
+                const X_T_X_inv = inverse(X_T_X);
+                const X_T_y = multiply(X_T, y.map(val => [val]));
+                const coefficients = multiply(X_T_X_inv, X_T_y).map(row => row[0]);
+                
+                // Calculate fitted values and residuals
+                const fitted = X_with_intercept.map(row => 
+                    row.reduce((sum, val, i) => sum + val * coefficients[i], 0)
+                );
+                const residuals = y.map((val, i) => val - fitted[i]);
+                
+                // Calculate statistics
+                const y_mean = y.reduce((sum, val) => sum + val, 0) / n;
+                const TSS = y.reduce((sum, val) => sum + Math.pow(val - y_mean, 2), 0);
+                const RSS = residuals.reduce((sum, val) => sum + Math.pow(val, 2), 0);
+                const r_squared = 1 - RSS / TSS;
+                const adj_r_squared = 1 - (RSS / (n - k - 1)) / (TSS / (n - 1));
+                
+                // Standard errors and t-statistics
+                const mse = RSS / (n - k - 1);
+                const std_errors = X_T_X_inv.map((row, i) => Math.sqrt(row[i] * mse));
+                const t_stats = coefficients.map((coef, i) => coef / std_errors[i]);
+                const p_values = t_stats.map(t => 2 * (1 - tDistribution(Math.abs(t), n - k - 1)));
+                
+                // Calculate F-statistic
+                const f_stat = (r_squared / k) / ((1 - r_squared) / (n - k - 1));
+                const f_p_value = 1 - fDistribution(f_stat, k, n - k - 1);
+                
+                return {
+                    coefficients,
+                    std_errors,
+                    t_stats,
+                    p_values,
+                    r_squared,
+                    adj_r_squared,
+                    mse,
+                    residuals,
+                    fitted,
+                    f_stat,
+                    f_p_value
+                };
+            } catch (error) {
+                throw new Error('Regression analysis failed: ' + error.message);
+            }
+        }
+
+        function tDistribution(t, df) {
+            // Approximation for t-distribution CDF
+            const x = t / Math.sqrt(df);
+            const a = 0.5 + x * (0.5 + x * (0.25 + x * (0.125 + x * 0.0625)));
+            return Math.min(0.5 + a / Math.sqrt(2 * Math.PI), 1);
+        }
+
+        function fDistribution(f, df1, df2) {
+            // Approximation for F-distribution CDF
+            const x = (df1 * f) / (df1 * f + df2);
+            return betaIncomplete(x, df1/2, df2/2);
+        }
+
+        function betaIncomplete(x, a, b) {
+            // Approximation for incomplete beta function
+            if (x === 0) return 0;
+            if (x === 1) return 1;
+            return Math.pow(x, a) * Math.pow(1 - x, b) / (a * beta(a, b));
+        }
+
+        function beta(a, b) {
+            // Approximation for beta function
+            return gamma(a) * gamma(b) / gamma(a + b);
+        }
+
+        function gamma(z) {
+            // Stirling's approximation for gamma function
+            if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
+            z -= 1;
+            let x = 0.99999999999980993;
+            const coeffs = [676.5203681218851, -1259.1392167224028, 771.32342877765313, 
+                          -176.61502916214059, 12.507343278686905, -0.13857109526572012, 
+                          9.9843695780195716e-6, 1.5056327351493116e-7];
+            for (let i = 0; i < coeffs.length; i++) {
+                x += coeffs[i] / (z + i + 1);
+            }
+            const t = z + coeffs.length - 0.5;
+            return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+        }
+
+        function detectMulticollinearity(correlationMatrix, threshold = 0.7) {
+            const warnings = [];
+            const n = correlationMatrix.length;
+            
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    if (Math.abs(correlationMatrix[i][j]) > threshold) {
+                        warnings.push({
+                            var1: i,
+                            var2: j,
+                            correlation: correlationMatrix[i][j]
+                        });
+                    }
+                }
+            }
+            
+            return warnings;
+        }
+
+        function removeCollinearVariables(X, variableNames, threshold = 0.7) {
+            const correlationMatrix = calculateCorrelationMatrix(X);
+            const vifValues = calculateVIF(X);
+            const toRemove = new Set();
+            
+            // Remove variables with high VIF (> 10)
+            vifValues.forEach((vif, index) => {
+                if (vif > 10) {
+                    toRemove.add(index);
+                }
+            });
+            
+            // Remove variables with high correlation
+            for (let i = 0; i < correlationMatrix.length; i++) {
+                for (let j = i + 1; j < correlationMatrix.length; j++) {
+                    if (Math.abs(correlationMatrix[i][j]) > threshold) {
+                        // Remove variable with higher VIF
+                        if (vifValues[i] > vifValues[j]) {
+                            toRemove.add(i);
+                        } else {
+                            toRemove.add(j);
+                        }
+                    }
+                }
+            }
+            
+            // Filter out removed variables
+            const filteredX = X.map(row => row.filter((_, index) => !toRemove.has(index)));
+            const filteredNames = variableNames.filter((_, index) => !toRemove.has(index));
+            
+            return {
+                X: filteredX,
+                variableNames: filteredNames,
+                removedVariables: Array.from(toRemove).map(i => variableNames[i])
+            };
+        }
+
+        function handleEnterKey(event, action) {
+            if (event.key === 'Enter') {
+                if (action === 'addCQA') addCQA();
+                if (action === 'addCPP') addCPP();
+            }
+        }
+
+        function addCQA() {
+            const input = document.getElementById('new-cqa');
+            const value = input.value.trim();
+            
+            if (value && !cqaVariables.includes(value)) {
+                cqaVariables.push(value);
+                input.value = '';
+                updateCQAList();
+            }
+        }
+
+        function addCPP() {
+            const input = document.getElementById('new-cpp');
+            const value = input.value.trim();
+            
+            if (value && !cppVariables.includes(value)) {
+                cppVariables.push(value);
+                input.value = '';
+                updateCPPList();
+            }
+        }
+
+        function removeCQA(index) {
+            cqaVariables.splice(index, 1);
+            updateCQAList();
+        }
+
+        function removeCPP(index) {
+            cppVariables.splice(index, 1);
+            updateCPPList();
+        }
+
+        function updateCQAList() {
+            const container = document.getElementById('cqa-list');
+            container.innerHTML = '';
+            
+            cqaVariables.forEach((variable, index) => {
+                const item = document.createElement('div');
+                item.className = 'variable-item';
+                item.innerHTML = `
+                    <span>${variable}</span>
+                    <button onclick="removeCQA(${index})">×</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateCPPList() {
+            const container = document.getElementById('cpp-list');
+            container.innerHTML = '';
+            
+            cppVariables.forEach((variable, index) => {
+                const item = document.createElement('div');
+                item.className = 'variable-item';
+                item.innerHTML = `
+                    <span>${variable}</span>
+                    <button onclick="removeCPP(${index})">×</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function clearVariables() {
+            cqaVariables = [];
+            cppVariables = [];
+            updateCQAList();
+            updateCPPList();
+        }
+
+        function loadSampleVariables() {
+            cqaVariables = [
+                'Disintegration Time (sec)',
+                'Dissolution Time (min)',
+                'Tablet Hardness (N)',
+                'Friability (%)'
+            ];
+            
+            cppVariables = [
+                'Blender Speed (rpm)',
+                'Blending Time (min)',
+                'Precompression Force (kN)',
+                'Main Compression Force (kN)',
+                'Tablet Weight (mg)',
+                'Punch Speed (rpm)'
+            ];
+            
+            updateCQAList();
+            updateCPPList();
+        }
+
+        function generateDataInputs() {
+            if (cqaVariables.length === 0 || cppVariables.length === 0) {
+                alert('Please add at least one CQA and one CPP variable.');
+                return;
+            }
+            
+            const numObs = parseInt(document.getElementById('num-observations').value);
+            const container = document.getElementById('data-input-container');
+            
+            let html = '<div class="data-input-grid">';
+            
+            // CQA data inputs
+            cqaVariables.forEach((variable, index) => {
+                html += `
+                    <div class="data-column">
+                        <h4>
